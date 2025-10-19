@@ -1,58 +1,50 @@
-import { Button } from 'bootstrap'
 import { useState } from 'react'
-import { userRegistration } from '../service/AuthService'
+import { storeToken, userLogin } from '../service/AuthService'
+import { useNavigate } from 'react-router-dom'
 
-const RegisterComponent = () => {
-  const [name, setName] = useState('')
+const LoginComponent = () => {
   const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const navigator = useNavigate()
 
-  function handleRegistration(e) {
+  function handleLogin(e) {
     e.preventDefault()
 
-    const register = { name, username, email, password }
+    console.log('=== LOGIN ATTEMPT ===')
+    console.log('Username:', username)
+    console.log('Password:', password)
+    console.log('Sending to backend:', {
+      usernameOrEmail: username,
+      password: password
+    })
 
-    // console.log(register)
-
-    userRegistration(register)
+    userLogin(username, password)
       .then((response) => {
-        console.log(response.data)
+        console.log('Login success:', response.data)
+        const token = 'Basic ' + window.btoa(username + ':' + password)
+        storeToken(token)
+        navigator('/todos')
       })
       .catch((error) => {
-        console.log(error)
+        console.error('Login error:', error)
+        console.error('Error response:', error.response?.data)
+        alert('Invalid username or password')
       })
   }
-
   return (
     <div className="container mb-2">
       <div className="row">
         <div className="col-md-6 offset-md-3">
           <div className="card">
             <div className="card-header">
-              <h2 className="text-capitalize text-center">
-                user registration form
-              </h2>
+              <h2 className="text-capitalize text-center">login form</h2>
             </div>
             <div className="card-body">
               <form>
                 <div className="row mb-3">
-                  <label className="col-md-3 control-label">Name</label>
-                  <div className="col-md-9">
-                    <input
-                      type="text"
-                      name="name"
-                      className="form-control"
-                      placeholder="Enter name"
-                      value={name}
-                      onChange={(e) => {
-                        setName(e.target.value)
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row mb-3">
-                  <label className="col-md-3 control-label">Username</label>
+                  <label className="col-md-3 control-label">
+                    Username or email
+                  </label>
                   <div className="col-md-9">
                     <input
                       type="text"
@@ -66,21 +58,7 @@ const RegisterComponent = () => {
                     />
                   </div>
                 </div>
-                <div className="row mb-3">
-                  <label className="col-md-3 control-label">Email</label>
-                  <div className="col-md-9">
-                    <input
-                      type="text"
-                      name="email"
-                      className="form-control"
-                      placeholder="Enter email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value)
-                      }}
-                    />
-                  </div>
-                </div>
+
                 <div className="row mb-3">
                   <label className="col-md-3 control-label">Password</label>
                   <div className="col-md-9">
@@ -99,7 +77,7 @@ const RegisterComponent = () => {
                 <div className="form-group mb-3">
                   <button
                     className="btn btn-primary"
-                    onClick={(e) => handleRegistration(e)}
+                    onClick={(e) => handleLogin(e)}
                   >
                     Submit
                   </button>
@@ -113,4 +91,4 @@ const RegisterComponent = () => {
   )
 }
 
-export default RegisterComponent
+export default LoginComponent

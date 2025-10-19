@@ -3,6 +3,7 @@ import HeaderComponent from './components/HeaderComponent'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import TodoComponent from './components/TodoComponent'
 import RegisterComponent from './components/RegisterComponent'
+import LoginComponent from './components/LoginComponent'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/add-todo" element={<TodoComponent />} />
           <Route path="/update-todo/:id" element={<TodoComponent />} />
           <Route path="/register" element={<RegisterComponent />} />
+          <Route path="/login" element={<LoginComponent />} />
         </Routes>
       </BrowserRouter>
     </>
