@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { storeToken, userLogin } from '../service/AuthService'
+import { saveLoggedInUser, storeToken, userLogin } from '../service/AuthService'
 import { useNavigate } from 'react-router-dom'
 
 const LoginComponent = () => {
@@ -7,23 +7,26 @@ const LoginComponent = () => {
   const [password, setPassword] = useState('')
   const navigator = useNavigate()
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault()
 
-    console.log('=== LOGIN ATTEMPT ===')
-    console.log('Username:', username)
-    console.log('Password:', password)
-    console.log('Sending to backend:', {
-      usernameOrEmail: username,
-      password: password
-    })
+    // console.log('=== LOGIN ATTEMPT ===')
+    // console.log('Username:', username)
+    // console.log('Password:', password)
+    // console.log('Sending to backend:', {
+    //   usernameOrEmail: username,
+    //   password: password
+    // })
 
-    userLogin(username, password)
+    await userLogin(username, password)
       .then((response) => {
         console.log('Login success:', response.data)
         const token = 'Basic ' + window.btoa(username + ':' + password)
         storeToken(token)
+        saveLoggedInUser(username)
         navigator('/todos')
+
+        window.location.reload(false)
       })
       .catch((error) => {
         console.error('Login error:', error)

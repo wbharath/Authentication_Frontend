@@ -1,6 +1,13 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { isUserLoggedIn, logout } from '../service/AuthService'
 
 function HeaderComponent() {
+  const isAuth = isUserLoggedIn()
+  function handleLogout() {
+    logout()
+    navigator('/login')
+  }
+  const navigator = useNavigate()
   return (
     <div>
       <header>
@@ -10,26 +17,47 @@ function HeaderComponent() {
               Todo Management Application
             </a>
           </div>
+
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav">
-              <li className="nav-item">
-                <NavLink to="/todos" className="nav-link">
-                  Todos
-                </NavLink>
-              </li>
+              {isAuth && (
+                <li className="nav-item">
+                  <NavLink to="/todos" className="nav-link">
+                    Todos
+                  </NavLink>
+                </li>
+              )}
             </ul>
           </div>
+
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink to="/register" className="nav-link">
-                Register
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink to="/login" className="nav-link">
-                Login
-              </NavLink>
-            </li>
+            {!isAuth && (
+              <li className="nav-item">
+                <NavLink to="/register" className="nav-link">
+                  Register
+                </NavLink>
+              </li>
+            )}
+
+            {!isAuth && (
+              <li className="nav-item">
+                <NavLink to="/login" className="nav-link">
+                  Login
+                </NavLink>
+              </li>
+            )}
+
+            {isAuth && (
+              <li className="nav-item">
+                <NavLink
+                  to="/login"
+                  className="nav-link"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </NavLink>
+              </li>
+            )}
           </ul>
         </nav>
       </header>
